@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>القرآن الكريم | H-M</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{
+    font-family: Arial, Tahoma;
+    background:#f5f5f5;
+    margin:0;
+    padding:0;
+}
+header{
+    background:#1e7f5c;
+    color:#fff;
+    padding:15px;
+    text-align:center;
+}
+select, audio{
+    width:100%;
+    margin:10px 0;
+    padding:10px;
+    font-size:16px;
+}
+.container{
+    padding:15px;
+}
+footer{
+    text-align:center;
+    padding:10px;
+    font-size:14px;
+    color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>📖 القرآن الكريم</h2>
+<p>استماع مباشر – جميع السور</p>
+</header>
+
+<div class="container">
+
+<label>اختر السورة:</label>
+<select id="sura">
+<option value="001">الفاتحة</option>
+<option value="002">البقرة</option>
+<option value="003">آل عمران</option>
+<option value="004">النساء</option>
+<option value="005">المائدة</option>
+<option value="006">الأنعام</option>
+<option value="007">الأعراف</option>
+<option value="008">الأنفال</option>
+<option value="009">التوبة</option>
+<option value="010">يونس</option>
+<!-- تقدر تزود باقي السور بعدين -->
+</select>
+
+<audio id="player" controls></audio>
+
+</div>
+
+<footer>
+موقع قرآن كريم مجاني – H-M
+</footer>
+
+<script>
+const player = document.getElementById("player");
+const sura = document.getElementById("sura");
+
+function play(){
+  player.src =
+  "https://server8.mp3quran.net/afs/" + sura.value + ".mp3";
+}
+
+sura.addEventListener("change", play);
+play();
+</script>
+
+</body>
+  </html>
+  
