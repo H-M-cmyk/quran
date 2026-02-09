@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+
+<title>القرآن الكريم كامل | جميع القراء | استماع وتحميل مجاني</title>
+
+<meta name="description" content="القرآن الكريم كامل 114 سورة بجميع القراء، تشغيل تلقائي، تحميل مباشر، ختمة جماعية، صدقة جارية.">
+<meta name="keywords" content="القرآن الكريم, قرآن mp3, تحميل القرآن, جميع القراء, ختمة قرآن">
+<meta name="author" content="H-M">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="icon" href="favicon.ico">
+
+<style>
+:root{
+  --bg:#0f172a;
+  --text:#ffffff;
+  --card:#1e293b;
+  --btn:#22c55e;
+}
+.light{
+  --bg:#f5f5f5;
+  --text:#000000;
+  --card:#ffffff;
+}
+body{
+  margin:0;
+  padding:15px;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Tahoma, Arial;
+  direction:rtl;
+}
+.box{
+  max-width:500px;
+  margin:auto;
+  background:var(--card);
+  padding:15px;
+  border-radius:12px;
+}
+h1,h2{text-align:center}
+select,input,button{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  font-size:16px;
+  border-radius:8px;
+  border:none;
+}
+button{
+  background:var(--btn);
+  font-weight:bold;
+}
+.toggle{
+  background:#64748b;
+  color:#fff;
+}
+audio{
+  width:100%;
+  margin-top:10px;
+}
+footer{
+  margin-top:20px;
+  text-align:center;
+  font-size:14px;
+  opacity:.85;
+}
+.counter{
+  text-align:center;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>📖 القرآن الكريم</h1>
+<h2>استماع • تحميل • ختمة جماعية</h2>
+
+<button class="toggle" onclick="toggleMode()">🌙 / ☀️ الوضع</button>
+
+<input id="search" placeholder="🔍 ابحث عن سورة">
+
+<select id="reciters"></select>
+<select id="surahs"></select>
+
+<button onclick="play()">▶️ تشغيل</button>
+
+<audio id="player" controls></audio>
+
+<a id="download" download>
+<button>⬇️ تحميل السورة</button>
+</a>
+
+<button onclick="khatma()">📖 أتممت ختمة</button>
+
+<div class="counter">
+🤲 عدد الختمات: <span id="kcount"></span><br>
+👁️ عدد الزيارات: <span id="visits"></span>
+</div>
+
+</div>
+
+<footer>
+صدقة جارية عن روح كل من قرأ وسمع 🤍  
+<br>
+تم الإنشاء بواسطة H-M
+</footer>
+
+<script>
+const body=document.body;
+const recitersSelect=document.getElementById("reciters");
+const surahsSelect=document.getElementById("surahs");
+const player=document.getElementById("player");
+const download=document.getElementById("download");
+const search=document.getElementById("search");
+
+let reciters=[];
+let suwar=[];
+
+/* الوضع الليلي */
+if(localStorage.mode==="light") body.classList.add("light");
+function toggleMode(){
+  body.classList.toggle("light");
+  localStorage.mode = body.classList.contains("light") ? "light" : "dark";
+}
+
+/* عداد الزيارات */
+let visits = localStorage.visits || 0;
+visits++;
+localStorage.visits = visits;
+document.getElementById("visits").innerText = visits;
+
+/* عداد الختمة */
+let k = localStorage.khatma || 0;
+document.getElementById("kcount").innerText = k;
+function khatma(){
+  k++;
+  localStorage.khatma = k;
+  document.getElementById("kcount").innerText = k;
+  if(navigator.share){
+    navigator.share({
+      title:"ختمة قرآن",
+      text:"شاركت في ختمة قرآن – صدقة جارية 🤍",
+      url:location.href
+    });
+  }else{
+    alert("جزاك الله خيرًا 🤍");
+  }
+}
+
+/* جلب القراء */
+fetch("https://api.mp3quran.net/api/v3/reciters")
+.then(r=>r.json())
+.then(d=>{
+  reciters = d.reciters;
+  reciters.forEach((r,i)=>{
+    recitersSelect.innerHTML += `<option value="${i}">${r.name}</option>`;
+  });
+});
+
+/* جلب السور */
+fetch("https://api.mp3quran.net/api/v3/suwar")
+.then(r=>r.json())
+.then(d=>{
+  suwar = d.suwar;
+  renderSuwar(suwar);
+});
+
+function renderSuwar(list){
+  surahsSelect.innerHTML="";
+  list.forEach(s=>{
+    surahsSelect.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+  });
+}
+
+/* البحث */
+search.oninput = ()=>{
+  renderSuwar(suwar.filter(s=>s.name.includes(search.value)));
+};
+
+/* تشغيل */
+function play(){
+  const r = reciters[recitersSelect.value];
+  const s = surahsSelect.value.toString().padStart(3,"0");
+  const url = r.moshaf[0].server + s + ".mp3";
+  player.src = url;
+  download.href = url;
+  player.play();
+}
+
+/* تشغيل تلقائي */
+player.onended = ()=>{
+  if(surahsSelect.selectedIndex < surahsSelect.options.length-1){
+    surahsSelect.selectedIndex++;
+    play();
+  }
+};
+</script>
+
+</body>
+  </html>
+  
