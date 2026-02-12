@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>القرآن الكريم – ختمة جماعية</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.json">
+
+<style>
+body{margin:0;font-family:Tahoma;background:#0f172a;color:#fff}
+header{background:#020617;padding:15px;text-align:center;font-size:22px}
+section{padding:15px}
+select,button{width:100%;padding:10px;margin:6px 0;font-size:16px}
+audio{width:100%;margin-top:10px}
+.progress{background:#1e293b;height:20px;border-radius:10px;overflow:hidden}
+.bar{height:100%;background:#22c55e;width:0%}
+footer{text-align:center;padding:10px;font-size:14px;opacity:.7}
+</style>
+</head>
+
+<body>
+
+<header>📖 القرآن الكريم – صدقة جارية</header>
+
+<section>
+
+<select id="reciter"></select>
+<select id="surah"></select>
+
+<button onclick="play()">▶️ تشغيل</button>
+<button onclick="auto()">🔁 ختمة تلقائية</button>
+<button onclick="download()">⬇️ تحميل السورة</button>
+
+<audio id="player" controls></audio>
+
+<h3>عداد الختمة</h3>
+<div class="progress"><div class="bar" id="bar"></div></div>
+
+</section>
+
+<footer>H-M | نسأل الله القبول</footer>
+
+<script>
+const reciters={
+"عبدالباسط (حفص)":"https://server8.mp3quran.net/afs/",
+"الحصري (حفص)":"https://server7.mp3quran.net/husr/",
+"المنشاوي":"https://server10.mp3quran.net/minsh/",
+"السديس":"https://server11.mp3quran.net/sds/",
+"الشريم":"https://server7.mp3quran.net/shur/",
+"ماهر المعيقلي":"https://server12.mp3quran.net/maher/",
+"ياسر الدوسري":"https://server11.mp3quran.net/yasser/",
+"ناصر القطامي":"https://server6.mp3quran.net/qtm/"
+};
+
+const surahs=[...Array(114)].map((_,i)=>`سورة رقم ${i+1}`);
+
+const r=document.getElementById("reciter");
+for(let k in reciters){r.innerHTML+=`<option value="${reciters[k]}">${k}</option>`}
+
+const s=document.getElementById("surah");
+surahs.forEach((x,i)=>s.innerHTML+=`<option value="${i+1}">${x}</option>`);
+
+const p=document.getElementById("player");
+const pad=n=>String(n).padStart(3,"0");
+
+let count=localStorage.count||0;
+update();
+
+function play(){
+  p.src=r.value+pad(s.value)+".mp3";
+  p.play();
+}
+
+function auto(){
+ let i=parseInt(s.value)||1;
+ play();
+ p.onended=()=>{
+   count++;localStorage.count=count;update();
+   if(++i<=114){s.value=i;play();}
+ }
+}
+
+function update(){
+ document.getElementById("bar").style.width=(count/114*100)+"%";
+}
+
+function download(){
+ window.open(p.src,"_blank");
+}
+</script>
+
+</body>
+</html>
